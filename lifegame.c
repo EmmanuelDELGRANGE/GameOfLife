@@ -4,13 +4,11 @@
  *  Created on:
  *      Author:
  */
-
+#include "lifegame.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-
-#include "lifegame.h"
 
 /* hard-coded world size */
 #define WORLDWIDTH 39
@@ -45,6 +43,53 @@ void initialize_world_from_file(const char * filename) {
 	   Also need to reset the next generation to DEAD
 	 */
 
+	//***** VARIABLES *****
+    int ligTemp, colTemp; // Creating and initializing temporary line and column cursors
+    ligTemp=0;
+    colTemp=0;
+
+    FILE *mapFile=NULL; // Pointeur du fichier
+    char charTemp=0; // Caractere lu dans le chichier
+
+
+	//***** PROGRAM *****//
+	//Opening file
+    mapFile=fopen((const char*)filename,"r");
+    if(mapFile==NULL)
+    {
+        printf("Erreur lors du chargement du fichier de map\n");
+        exit(0);
+    }
+
+
+	//Reading values
+    while(ligTemp<WORLDHEIGHT)  //Reading the values in the file char by char while ligTemp is smaller than ligSize
+    {
+        charTemp = fgetc(mapFile); //reading a character in the file
+        if(charTemp==EOF)  //If End Of File is reached -> end of the function
+        {
+            ligTemp=WORLDHEIGHT;
+        }
+        else if(charTemp=='\n')  //If End Of Line is reached -> function continues but the values are putted to the next row of the matrix
+        {
+            ligTemp++;
+            colTemp=0;
+        }
+		else if(colTemp>=WORLDWIDTH)//Skip if world line is already full
+		{
+			colTemp++;
+		}
+        else
+        {
+
+            world[ligTemp][colTemp]=((int)charTemp-'0'); //A normal character is detected so its send to its new matrix location
+            colTemp++;
+        }
+    }
+    fclose(mapFile); //Closing the file once the reading is done
+    scanf("%c",&charTemp);
+
+
 
 }
 
@@ -59,7 +104,31 @@ void save_world_to_file(const char * filename) {
 	   initialize_world_from_file(filename) above; we can use
 	   it to resume a game later
 	 */
+	//Variables:
+    int ligTemp, colTemp; // Creating and initializing temporary line and column cursors
+    ligTemp=0;
+    colTemp=0;
+	FILE *mapFile=NULL; // Map File
 
+    ///Opening map file
+    mapFile= fopen ((const char*)filename, "w"); //Opening the designated save file
+    if(mapFile==NULL)
+    {
+        printf("Erreur lors de la sauvegarde\n");
+        exit(0);
+    }
+
+
+    for (ligTemp=0; ligTemp<WORLDHEIGHT; ligTemp++) //Going trough the rows of the matrix
+    {
+        for(colTemp=0; colTemp<WORLDWIDTH; colTemp++) //Going trough the columns of the matrix
+        {
+            fputc((world[ligTemp][colTemp])+48,mapFile); //putting the cell value from the matrix in the save file
+        }
+        if(ligTemp<(WORLDHEIGHT-1))fputc('\n',mapFile); //While the loop is not at the last row a '\n' is putted in the end of each rows
+    }
+
+    fclose(mapFile); //Closing the save file
 
 }
 
