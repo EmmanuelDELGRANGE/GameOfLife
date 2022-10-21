@@ -81,13 +81,17 @@ void initialize_world_from_file(const char * filename) {
 		}
         else
         {
-
-            world[ligTemp][colTemp]=((int)charTemp-'0'); //A normal character is detected so its send to its new matrix location
+			if(charTemp=='*'){
+				world[ligTemp][colTemp]=1; //A '*' character is detected so its send to its new matrix location
+			}
+			else{
+				world[ligTemp][colTemp]=0; //A ' ' or else character is detected so its send to its new matrix location
+			}
             colTemp++;
         }
     }
     fclose(mapFile); //Closing the file once the reading is done
-    scanf("%c",&charTemp);
+    //scanf("%c",&charTemp);
 
 
 

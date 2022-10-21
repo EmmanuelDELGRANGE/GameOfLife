@@ -44,12 +44,12 @@ int main(void)
 	/* initialize the world */
 	initialize_world_from_file("glider.txt");
 
-
+	system("cls");
 	for (n = 0; n < NUM_GENERATIONS; n++){
-		next_generation();
 		promp_next_generation(); //(optional): Visualise world in each generation
+		next_generation();
 	}
-
+	
 	/* Output final world state */
 	display_world();
 
@@ -84,11 +84,15 @@ int get_next_state(int x, int y) {
 	{
 	//Case of solitude:
 	case 0:
+		return DEAD;
+		break;
 	case 1:
 		return DEAD;
 		break;
 	//Case of life / Birth
 	case 2:
+		return ALIVE;
+		break;
 	case 3:
 		return ALIVE;
 		break;
@@ -126,7 +130,7 @@ int num_neighbors(int x, int y) {
 }
 
 void display_world(void){
-	char charState[2]="*.";
+	char charState[2]={'.','*'};
 
 	system("cls"); //clear the console on WINDOWS
 	for(int x=0; x<get_world_width();x++){ //Going through all columns
